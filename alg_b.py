@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 def pass_(*args):
     pass
 
@@ -62,29 +64,58 @@ def combinations(n, k):
     for p in algorithm_b(x, D, is_good):
         print(p)
 
-def n_queens(n):
+# The n-queens problem.
 
-    def is_good(x, ell):
-        # Ensure each queen is in a unique column.
-        if len(set(x[0:ell])) < ell:
+def n_queens_is_good(x, ell):
+    # Ensure each queen is in a unique column.
+    if len(set(x[0:ell])) < ell:
+        return False
+    # Ensure the new queen is not attacked along diagonals.
+    for k in range(ell - 1):
+        if ell - 1 - k == abs(x[ell - 1] - x[k]):
             return False
-        # Ensure the new queen is not attacked along diagonals.
-        for k in range(ell - 1):
-            if ell - 1 - k == abs(x[ell - 1] - x[k]):
-                return False
-        return True
+    return True
+
+def print_board(x):
+    n = len(x)
+    for col in x:
+        print(f'{"L_ " * col} * {"L_ " * (n - col - 1)}')
+
+def n_queens(n):
 
     x = [0] * n
     D = [list(range(n)) for _ in range(n)]
 
-    for i, q in enumerate(algorithm_b(x, D, is_good)):
+    for i, q in enumerate(algorithm_b(x, D, n_queens_is_good)):
         print()
         print(f'Solution {i + 1}:')
-        for col in x:
-            print(f'{"L_ " * col} * {"L_ " * (n - col - 1)}')
+        print_board(x)
+
+def problem_8():
+    """ The problem is to search for two different 8-queens solutions which are
+        identical in the first six rows. """
+
+    n = 8
+    x = [0] * n
+    D = [list(range(n)) for _ in range(n)]
+
+    # `solns` will map (x1,x2,..,x6) to a list of full solutions.
+    solns = defaultdict(list)
+    for i, q in enumerate(algorithm_b(x, D, n_queens_is_good)):
+        key = tuple(q[:6])
+        solns[key].append((i + 1, q))
+        if len(solns[key]) == 2:
+            soln1, soln2 = solns[key]
+            print()
+            print('_' * 70)
+            print(f'Solutions {soln1[0]} and {soln2[0]} are a pair:')
+            print()
+            print_board(soln1[1])
+            print()
+            print_board(soln2[1])
 
 # permutations(4)
-
 # combinations(5, 3)
+# n_queens(8)
 
-n_queens(8)
+problem_8()
