@@ -20,18 +20,9 @@ def algorithm_b(x, D, is_good, update=pass_, downdate=pass_, ell=0):
         allow is_good to operate more efficiently.
     """
 
-    # print(f'algorithm_b with ell={ell}.')
-
     if ell == len(x):
-        # print(f'About to yield {x}.')
         yield x
         return
-
-    # print('ell:')
-    # print(ell)
-
-    # print('D:')
-    # print(D)
 
     for d in D[ell]:
         x[ell] = d
