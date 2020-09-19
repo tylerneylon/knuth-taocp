@@ -11,3 +11,6 @@ Files:
 * `alg_L.py` - This contains the Python version of a way to find all Langford
   pairs, Algorithm 7.2.2L.
 * `alg_L.c` - This is the C version of alg_L.py, also Algorithm 7.2.2L.
+
+Based on one timing test, it looks like alg_L.C is about 64x faster than
+alg_L.py.
