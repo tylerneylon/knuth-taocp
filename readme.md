@@ -11,6 +11,7 @@ Files:
 * `alg_L.py` - This contains the Python version of a way to find all Langford
   pairs, Algorithm 7.2.2L.
 * `alg_L.c` - This is the C version of alg_L.py, also Algorithm 7.2.2L.
+* `word_rect.py` - This builds word rectangles as explained in 7.2.2.
 
 Based on one timing test, it looks like alg_L.C is about 64x faster than
 alg_L.py.
