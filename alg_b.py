@@ -20,17 +20,16 @@ def algorithm_b(x, D, is_good, update=pass_, downdate=pass_, ell=0):
         allow is_good to operate more efficiently.
     """
 
-    if ell == len(x):
-        yield x
-        return
-
     for d in D[ell]:
         x[ell] = d
         ell += 1
         if is_good(x, ell):
-            update(x, ell)
-            yield from algorithm_b(x, D, is_good, update, downdate, ell)
-            downdate(x, ell)
+            if ell == len(x):
+                yield x
+            else:
+                update(x, ell)
+                yield from algorithm_b(x, D, is_good, update, downdate, ell)
+                downdate(x, ell)
         ell -= 1
 
 def permutations(n):
@@ -109,4 +108,5 @@ def problem_8():
 # combinations(5, 3)
 # n_queens(8)
 
-problem_8()
+if __name__ == '__main__':
+    problem_8()
