@@ -23,7 +23,6 @@ def find_word_rect(m, n):
         if wordsize not in words:
             with open(get_word_path(wordsize)) as f:
                 words[wordsize] = [line.strip() for line in f]
-                print(f'Loaded {len(words[wordsize])} words of size {wordsize}')
 
     # Index the word lists so we can more efficiently build the rectangle.
     # row_next_letters[prefix] = <the set of valid next letters; may be empty>
@@ -55,40 +54,38 @@ def find_word_rect(m, n):
         return True
 
     def update(x, ell):
+        ''' This receives a list x[0] .. x[ell - 1], each a word of length m.
+            We think of these words as columns. For partial row i, this
+            function finds the set of column words such that the augmented row
+            has any word completions; this is word_sets[i]. The intersection of
+            all word_sets is the set of all compatible next columns, which we
+            place into D[ell]. This set may be empty, in which case algorithm b
+            will backtrack.
+        '''
 
-        # XXX and below
-        y = x
+        # For each row prefix, find the set of possible next letters.
+        prefixes = [''.join(col[i] for col in x[:ell]) for i in range(m)]
+        next_letters = [row_next_letters[prefix] for prefix in prefixes]
 
-        try:
-            # For each row prefix, find the set of possible next letters.
-            prefixes = [''.join(col[i] for col in x[:ell]) for i in range(m)]
-            next_letters = [row_next_letters[prefix] for prefix in prefixes]
-        except:
-            print('x:', x)
+        # Find the set of words that could be the next column word.
+        word_sets = [set() for _ in range(m)]
+        for i, word_set in enumerate(word_sets):
+            for let in next_letters[i]:
+                word_set |= col_words[(i, let)]
 
-        # Find the compatible word sets.
-        try:
-            word_sets = [
-                    set.union(*[col_words[(i, let)] for let in next_letters[i]])
-                    for i in range(m)
-            ]
-        except:
-            print('x:', x)
-            print('ell:', ell)
-
-        # I suspect the intersection will be faster if we sort the word sets.
-        # I have not verified this.
+        # The intersection is heuristically faster with shorter sets first.
         word_sets.sort(key=len)
-
         undo_stack.append(D[ell])
         D[ell] = set.intersection(*word_sets)
 
     def downdate(x, ell):
         D[ell] = undo_stack.pop()
 
-    x = [None] * n
+    x = [None] * n  # There are n columns.
     for wordrect in algorithm_b(x, D, is_good, update, downdate):
-        print(wordrect)
+        print()
+        for i in range(m):  # Print out each of the m rows.
+            print(''.join(col[i] for col in x))
 
 if __name__ == '__main__':
-    find_word_rect(5, 6)
+    find_word_rect(5, 8)
