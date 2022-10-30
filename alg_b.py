@@ -1,11 +1,9 @@
 from collections import defaultdict
 
-from tqdm import tqdm
-
 def pass_(*args):
     pass
 
-def algorithm_b(x, D, is_good, update=pass_, downdate=pass_, ell=0, desc=None):
+def algorithm_b(x, D, is_good, update=pass_, downdate=pass_, ell=0):
     """ This is the basic backtrack algorithm from section 7.2.2.
 
         x is a list whose values will be changed as this iterates; x will be the
@@ -22,33 +20,17 @@ def algorithm_b(x, D, is_good, update=pass_, downdate=pass_, ell=0, desc=None):
         allow is_good to operate more efficiently.
     """
 
-    def passthru(x, desc=None):
-        return x
-
-    progress = tqdm if ell == 1 else passthru
-
-    i = 0
-    for d in progress(D[ell], desc=desc):
+    for d in D[ell]:
         x[ell] = d
         ell += 1
-
-        # XXX
-        # print('\r', x, end='     ', flush=True)
-
         if is_good(x, ell):
             if ell == len(x):
                 yield x
             else:
                 update(x, ell)
-
-                # XXX
-                desc = None
-                if ell == 1:
-                    desc = f'{d} [i={i}]'
-                yield from algorithm_b(x, D, is_good, update, downdate, ell, desc)
+                yield from algorithm_b(x, D, is_good, update, downdate, ell)
                 downdate(x, ell)
         ell -= 1
-        i += 1  # XXX
 
 def permutations(n):
 

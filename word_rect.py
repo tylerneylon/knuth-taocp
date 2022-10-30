@@ -88,4 +88,4 @@ def find_word_rect(m, n):
             print(''.join(col[i] for col in x))
 
 if __name__ == '__main__':
-    find_word_rect(5, 8)
+    find_word_rect(5, 6)
